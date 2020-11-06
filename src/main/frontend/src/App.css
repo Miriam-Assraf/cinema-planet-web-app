@@ -1,0 +1,97 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.seats-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: right;
+  align-items: center;
+  margin-left: 150px;
+  margin-bottom: 20px;
+}
+
+.legend-container {
+  display: flex;
+  /* flex-direction: column; */
+  /* justify-content: center;
+  align-items: center; */
+  /* margin: "5px"; */
+  /* margin-top: 80px; */
+  /* margin-right: 80px; */
+  /* margin: 10px; */
+}
+
+.seat-middle-icon g {
+  fill: #941dd3;
+}
+
+.seat-item {
+  padding: 5px;
+}
+.screen {
+  display: flex;
+  flex-direction: row;
+  margin-left: 300px;
+}
+.row-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.number-of-seats-counter {
+  display: flex;
+  flex-direction: row;
+  color: white;
+  align-items: center;
+  justify-content: center;
+  padding-right: 10px;
+}
+
+.movie-info-in-theater {
+  display: flex;
+  flex-direction: row;
+}
+
+.center-theater-container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 80px;
+  margin-left: 80px;
+  /* margin: 80px; */
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
