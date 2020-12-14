@@ -1,4 +1,4 @@
-package com.miriam.assraf.backend.data.entityConverter;
+package com.miriam.assraf.backend.data.utils;
 
 public class LongAndStringConverter {
     private long longValue;

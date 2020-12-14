@@ -1,4 +1,4 @@
-package com.miriam.assraf.backend.data.entityConverter;
+package com.miriam.assraf.backend.data.utils;
 
 import com.miriam.assraf.backend.data.RoleEntity;
 import com.miriam.assraf.backend.data.UserEntity;

@@ -1,4 +1,4 @@
-package com.miriam.assraf.backend.rest;
+package com.miriam.assraf.backend.controller;
 
 import com.miriam.assraf.backend.logic.elementService.EnhancedElementService;
 import com.miriam.assraf.backend.view.ElementBoundary;

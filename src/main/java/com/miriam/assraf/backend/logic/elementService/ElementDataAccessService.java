@@ -8,9 +8,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import com.miriam.assraf.backend.dao.ElementDao;
 import com.miriam.assraf.backend.data.ElementEntity;
-import com.miriam.assraf.backend.data.entityConverter.DoubleAndStringConverter;
-import com.miriam.assraf.backend.data.entityConverter.ElementEntityConverter;
-import com.miriam.assraf.backend.data.entityConverter.LongAndStringConverter;
+import com.miriam.assraf.backend.data.utils.DoubleAndStringConverter;
+import com.miriam.assraf.backend.data.utils.ElementEntityConverter;
+import com.miriam.assraf.backend.data.utils.LongAndStringConverter;
 import com.miriam.assraf.backend.logic.exceptions.ForbiddenException;
 import com.miriam.assraf.backend.logic.exceptions.NotFoundException;
 import com.miriam.assraf.backend.logic.userService.UserDataAccessService;
@@ -60,7 +60,7 @@ public class ElementDataAccessService implements EnhancedElementService {
 
             return this.entityConverter.convertFromEntity(elementEntity);
         } else
-            throw new ForbiddenException("Aunothorized to create new element.");
+            throw new ForbiddenException("Uunothorized to create new element.");
     }
 
     @Override
@@ -103,7 +103,7 @@ public class ElementDataAccessService implements EnhancedElementService {
 
             return this.entityConverter.convertFromEntity(existingElement);
         } else
-            throw new ForbiddenException("Aunothorized to update element.");
+            throw new ForbiddenException("Uunothorized to update element.");
     }
 
     @Override
@@ -115,13 +115,13 @@ public class ElementDataAccessService implements EnhancedElementService {
         Optional<ElementEntity> elementEntity = this.elementDao.findById(Long.parseLong(elementId));
 
         if (elementEntity.isPresent()) {
-            if (user.getRole() == RoleBoundary.PLAYER && elementEntity.get().getActive() == false) {
+            if (user.getRole() == RoleBoundary.PLAYER && !elementEntity.get().getActive()) {
                 throw new NotFoundException("could not find element with id: " + elementId);
-            } else if ((user.getRole() == RoleBoundary.PLAYER && elementEntity.get().getActive() == true)
-                    || user.getRole() == RoleBoundary.MANAGER) {
+            } else if ((user.getRole() != RoleBoundary.PLAYER && !elementEntity.get().getActive())
+                    || user.getRole() != RoleBoundary.MANAGER) {
                 return this.entityConverter.convertFromEntity(elementEntity.get());
             } else {
-                throw new ForbiddenException("Anauthorized to retrieve element."); // not player or manager
+                throw new ForbiddenException("Unauthorized to retrieve element."); // not player or manager
             }
         } else {
             throw new NotFoundException("could not find element with id: " + elementId);
@@ -163,7 +163,7 @@ public class ElementDataAccessService implements EnhancedElementService {
                     .map(this.entityConverter::convertFromEntity) // convert to Stream<ElementBoundary>
                     .collect(Collectors.toList()); // back to List<ElementBoundary>
         } else
-            throw new ForbiddenException("Anauthorized to get all elements."); // not player or manager
+            throw new ForbiddenException("Unauthorized to get all elements."); // not player or manager
     }
 
     @Override
@@ -174,7 +174,7 @@ public class ElementDataAccessService implements EnhancedElementService {
         if (user.getRole() == RoleBoundary.ADMIN) {
             this.elementDao.deleteAll();
         } else
-            throw new ForbiddenException("Anauthorized to delete all elements.");
+            throw new ForbiddenException("Unauthorized to delete all elements.");
     }
 
     @Override
@@ -193,7 +193,7 @@ public class ElementDataAccessService implements EnhancedElementService {
 
             this.elementDao.save(parent);
         } else
-            throw new ForbiddenException("Anauthorized to connect between elements.");
+            throw new ForbiddenException("Unauthorized to connect between elements.");
     }
 
     @Override

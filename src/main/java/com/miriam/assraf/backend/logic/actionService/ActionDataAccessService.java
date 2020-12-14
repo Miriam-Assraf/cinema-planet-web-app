@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import com.miriam.assraf.backend.dao.ActionDao;
 import com.miriam.assraf.backend.data.ActionEntity;
-import com.miriam.assraf.backend.data.entityConverter.ActionEntityConverter;
+import com.miriam.assraf.backend.data.utils.ActionEntityConverter;
 import com.miriam.assraf.backend.logic.actions.GetAvailableSeatsAction;
 import com.miriam.assraf.backend.logic.actions.GetMiddleRowAction;
 import com.miriam.assraf.backend.logic.actions.GetMiddleSeatAction;
@@ -76,7 +76,9 @@ public class ActionDataAccessService implements EnhancedActionService {
         UserBoundary user = userService.login(actionBoundary.getInvokedBy().getEmail());
         Object res = null;
 
-        if (user.getRole() == RoleBoundary.PLAYER) { // only PLAYER can invoke new action
+        if (user.getRole() == RoleBoundary.MANAGER || user.getRole() == RoleBoundary.ADMIN) { // actions for players only
+            throw new ForbiddenException("Unauthorized to invoke new action.");
+        }
             // create new tuple in idValue table with non-used id
             ActionEntity actionEntity = this.entityConverter.convertToEntity(actionBoundary);
             // LastIdValue idValue = this.lastValueDao.save(new LastIdValue());
@@ -108,9 +110,6 @@ public class ActionDataAccessService implements EnhancedActionService {
                     break; // do nothing
             }
             return res;
-
-        } else
-            throw new ForbiddenException("Anauthorized to invoke new action.");
     }
 
     @Override
@@ -132,7 +131,7 @@ public class ActionDataAccessService implements EnhancedActionService {
         if (user.getRole() == RoleBoundary.ADMIN) {
             this.actionDao.deleteAll();
         } else
-            throw new ForbiddenException("Anauthorized to delete all actions.");
+            throw new ForbiddenException("Unauthorized to delete all actions.");
     }
 
     @Override
@@ -147,6 +146,6 @@ public class ActionDataAccessService implements EnhancedActionService {
                     .map(this.entityConverter::convertFromEntity) // convert to Stream<ActionBoundary>
                     .collect(Collectors.toList()); // back to List<ActionBoundary>
         } else
-            throw new ForbiddenException("Anauthorized to get all actions.");
+            throw new ForbiddenException("Unauthorized to get all actions.");
     }
 }

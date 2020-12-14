@@ -2,7 +2,7 @@ package com.miriam.assraf.backend.logic.actions;
 
 import java.util.Map;
 import com.miriam.assraf.backend.dao.ElementDao;
-import com.miriam.assraf.backend.data.entityConverter.ElementEntityConverter;
+import com.miriam.assraf.backend.data.utils.ElementEntityConverter;
 import com.miriam.assraf.backend.logic.actionService.ActionInterface;
 import com.miriam.assraf.backend.logic.elementService.EnhancedElementService;
 import com.miriam.assraf.backend.logic.exceptions.NotFoundException;

@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import com.miriam.assraf.backend.dao.UserDao;
 import com.miriam.assraf.backend.data.UserEntity;
-import com.miriam.assraf.backend.data.entityConverter.UserEntityConverter;
+import com.miriam.assraf.backend.data.utils.UserEntityConverter;
 import com.miriam.assraf.backend.logic.exceptions.ForbiddenException;
 import com.miriam.assraf.backend.logic.exceptions.NotFoundException;
 import com.miriam.assraf.backend.view.RoleBoundary;

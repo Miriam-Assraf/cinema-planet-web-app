@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.miriam.assraf.backend.dao.ElementDao;
-import com.miriam.assraf.backend.data.entityConverter.ElementEntityConverter;
-import com.miriam.assraf.backend.data.entityConverter.LongAndStringConverter;
+import com.miriam.assraf.backend.data.utils.ElementEntityConverter;
+import com.miriam.assraf.backend.data.utils.LongAndStringConverter;
 import com.miriam.assraf.backend.logic.actionService.ActionInterface;
 import com.miriam.assraf.backend.logic.elementService.EnhancedElementService;
 import com.miriam.assraf.backend.logic.userService.EnhancedUserService;
