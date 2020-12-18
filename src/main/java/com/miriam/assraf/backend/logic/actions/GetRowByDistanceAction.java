@@ -9,6 +9,7 @@ import com.miriam.assraf.backend.logic.exceptions.NotFoundException;
 import com.miriam.assraf.backend.logic.userService.EnhancedUserService;
 import com.miriam.assraf.backend.view.ActionBoundary;
 import com.miriam.assraf.backend.view.ElementBoundary;
+import com.miriam.assraf.backend.view.UserBoundary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,9 +37,15 @@ public class GetRowByDistanceAction implements ActionInterface {
     @Override
     @Transactional(readOnly = true)
     public Object doAction(ActionBoundary action) {
-        com.miriam.assraf.backend.view.UserBoundary user = userService.login(action.getInvokedBy().getEmail());
-        ElementBoundary element = elementService.getSpecificElement(user.getEmail(),
-                action.getElement().getElementId()); // if user role is PLAYER and element is not active, will
+        UserBoundary user;
+
+        if(action.getInvokedBy().getEmail()!=null) {
+            user = userService.login(action.getInvokedBy().getEmail());
+        }
+        else
+            user = userService.login("user@demo.com");
+
+        ElementBoundary element = elementService.getSpecificElement(action.getElement().getElementId()); // if user role is PLAYER and element is not active, will
         // check theres action attribute "distance" and if there is get it's value
         if (Boolean.TRUE.equals(action.getActionAttributes().containsKey("distance"))) {
             return this.entityConverter

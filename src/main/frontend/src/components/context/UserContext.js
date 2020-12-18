@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 
 export const UserContext = React.createContext();
-const userUrl = "http://cinemaplanet-env-2.eba-vd7pk3vm.eu-central-1.elasticbeanstalk.com/acs/users";
+const userUrl = "http://cinemaplanet-env.eba-zpzpkar4.eu-central-1.elasticbeanstalk.com/acs/users";
 
 export default class UserProvider extends React.Component {
   state = {
@@ -11,7 +11,7 @@ export default class UserProvider extends React.Component {
       email: "",
       username: "",
       role: "",
-      avatar: "/broken-image.jpg",
+      avatar: "",
     },
   };
 

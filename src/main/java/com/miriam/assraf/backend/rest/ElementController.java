@@ -1,4 +1,4 @@
-package com.miriam.assraf.backend.controller;
+package com.miriam.assraf.backend.rest;
 
 import com.miriam.assraf.backend.logic.elementService.EnhancedElementService;
 import com.miriam.assraf.backend.view.ElementBoundary;
@@ -41,65 +41,64 @@ public class ElementController {
     }
 
     // GET --> get an element
-    @RequestMapping(path = "/acs/elements/{userEmail}/{elementId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ElementBoundary getElement(@PathVariable("userEmail") String userEmail,
-            @PathVariable("elementId") String elementId) {
-        return this.elementService.getSpecificElement(userEmail, elementId);
+    @RequestMapping(path = "/acs/elements/{elementId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ElementBoundary getElement(@PathVariable("elementId") String elementId) {
+        return this.elementService.getSpecificElement(elementId);
     }
 
     // GET --> get all elements
-    @RequestMapping(path = "/acs/elements/{userEmail}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ElementBoundary[] getAllElements(@PathVariable("userEmail") String userEmail,
-            @RequestParam(name = "size", required = false, defaultValue = "10") int size, // not required, will return
-                                                                                          // 10 elements as default
-            @RequestParam(name = "page", required = false, defaultValue = "0") int page) { // not required, will return
-                                                                                           // first page as default
-        return this.elementService.getAll(userEmail, size, page).toArray(new ElementBoundary[0]);
+    @RequestMapping(path = "/acs/elements", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ElementBoundary[] getAllElements(@RequestParam(name = "size", required = false, defaultValue = "10") int size, // not required, will return
+                                            @RequestParam(name = "page", required = false, defaultValue = "0") int page) { // not required, will return
+        return this.elementService.getAll(size, page).toArray(new ElementBoundary[0]);
     }
 
     // PUT --> add child element to element
     @RequestMapping(path = "/acs/elements/{managerEmail}/{parentElementId}/children", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addChildToParent(@PathVariable("managerEmail") String managerEmail,
-            @PathVariable("parentElementId") String parentId, @RequestBody ElementIdBoundary child) {
-
+    public void addChildToParent(@PathVariable("managerEmail") String managerEmail, @PathVariable("parentElementId") String parentId, @RequestBody ElementIdBoundary child) {
         this.elementService.addChildToParent(managerEmail, parentId, child.getElementId());
     }
 
     // GET --> get array of children of element
-    @RequestMapping(path = "/acs/elements/{userEmail}/{parentElementId}/children", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ElementBoundary[] getAllChildren(@PathVariable("userEmail") String userEmail,
-            @PathVariable("parentElementId") String parentId,
+    @RequestMapping(path = "/acs/elements/{parentElementId}/children", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ElementBoundary[] getAllChildren(@PathVariable("parentElementId") String parentId,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        return this.elementService.getChildren(userEmail, parentId, size, page).toArray(new ElementBoundary[0]);
+        return this.elementService.getChildren(parentId, size, page).toArray(new ElementBoundary[0]);
     }
 
     // GET --> get array of parents of element
-    @RequestMapping(path = "/acs/elements/{userEmail}/{childElementId}/parents", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ElementBoundary[] getAllParents(@PathVariable("userEmail") String userEmail,
-            @PathVariable("childElementId") String childId,
+    @RequestMapping(path = "/acs/elements/{childElementId}/parents", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ElementBoundary[] getAllParents(@PathVariable("childElementId") String childId,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        return this.elementService.getParents(userEmail, childId, size, page).toArray(new ElementBoundary[0]);
+        return this.elementService.getParents(childId, size, page).toArray(new ElementBoundary[0]);
     }
 
     // GET --> get array of elements matching specific name
-    @RequestMapping(path = "/acs/elements/{userEmail}/search/byName/{elementName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ElementBoundary[] getAllByName(@PathVariable("userEmail") String userEmail,
-            @PathVariable("elementName") String elementName,
+    @RequestMapping(path = "/acs/elements/search/byName/{elementName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ElementBoundary[] getAllByName(@PathVariable("elementName") String elementName,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        return this.elementService.getElementsByName(userEmail, elementName, size, page)
+        return this.elementService.getElementsByName(elementName, size, page)
                 .toArray(new ElementBoundary[0]);
     }
 
     // GET --> get array of elements matching specific type
-    @RequestMapping(path = "/acs/elements/{userEmail}/search/byType/{elementType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ElementBoundary[] getAllByType(@PathVariable("userEmail") String userEmail,
-            @PathVariable("elementType") String elementType,
+    @RequestMapping(path = "/acs/elements/search/byType/{elementType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ElementBoundary[] getAllByType(@PathVariable("elementType") String elementType,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        return this.elementService.getElementsByType(userEmail, elementType, size, page)
+        return this.elementService.getElementsByType(elementType, size, page)
+                .toArray(new ElementBoundary[0]);
+    }
+
+    @RequestMapping(path = "/acs/elements/search/byName/{elementName}/byType/{elementType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ElementBoundary[] getAllByNameAndType(@PathVariable("elementName") String elementName,
+                                          @PathVariable("elementType") String elementType,
+                                          @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                          @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+        return this.elementService.getElementsByNameAndType(elementName, elementType, size, page)
                 .toArray(new ElementBoundary[0]);
     }
 }

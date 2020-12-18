@@ -8,9 +8,9 @@ public interface ElementService {
 
     public ElementBoundary update(String managerEmail, String elementId, ElementBoundary update);
 
-    public List<ElementBoundary> getAll(String userEmail);
+    public List<ElementBoundary> getAll();
 
-    public ElementBoundary getSpecificElement(String userEmail, String elementId);
+    public ElementBoundary getSpecificElement(String elementId);
 
     public void deleteAllElements(String adminEmail);
 }

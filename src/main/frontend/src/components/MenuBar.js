@@ -20,45 +20,52 @@ export default class MenuBar extends React.Component {
     };
 
     return (
-      <UserContext.Consumer>
-        {(context) => (
-          <div>
-            <Navbar fixed="top" bg="dark" variant="dark" name="logo">
-              <Navbar.Brand href="/" className="navbar-brand">
-                <img
-                  src={logo}
-                  className="app-logo"
-                  alt="Logo"
-                  width="100"
-                  height="100"
-                />
-              </Navbar.Brand>
-              <Nav className="mr-auto"></Nav>
-              <Form inline>
-                <UserMenu />
-              </Form>
-            </Navbar>
-            <Navbar fixed="top" name="search" style={searchStyle}>
-              <Nav className="mr-auto"></Nav>
-              <Form inline>
-                <TextField
-                  style={marginRight}
-                  label="Search..."
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment>
-                        <IconButton>
-                          <SearchIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Form>
-            </Navbar>
-          </div>
-        )}
-      </UserContext.Consumer>
+        <UserContext.Consumer>
+          {(context) => (
+              <div>
+                <Navbar fixed="top" bg="dark" variant="dark" name="logo">
+                  <Navbar.Brand href="/" className="navbar-brand">
+                    <img
+                        src={logo}
+                        className="app-logo"
+                        alt="Logo"
+                        width="100"
+                        height="100"
+                    />
+                  </Navbar.Brand>
+                  <Nav className="mr-auto"></Nav>
+                  <Form inline>
+                    <UserMenu />
+                  </Form>
+                </Navbar>
+                <Navbar fixed="top" name="search" style={searchStyle}>
+                  <Nav className="mr-auto"></Nav>
+                  <Form inline>
+                    <TextField
+                        style={marginRight}
+                        label="Search..."
+                        InputProps={{
+                          endAdornment: (
+                              <InputAdornment>
+                                <IconButton>
+                                  <SearchIcon />
+                                </IconButton>
+                              </InputAdornment>
+                          ),
+                        }}
+                    />
+                  </Form>
+                </Navbar>
+              </div>
+          )}
+        </UserContext.Consumer>
     );
   }
 }
+    /*onChange={async (event) => {
+                           event.preventDefault();
+                           const res = await cinemaContext.getMoviesByName(event.target.value);
+                           if (res) {
+                             cinemaContext.setMovies(res.data);
+                             this.props.history.push("/");
+                           }}}*/

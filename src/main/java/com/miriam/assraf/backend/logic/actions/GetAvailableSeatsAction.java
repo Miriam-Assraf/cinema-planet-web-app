@@ -11,6 +11,7 @@ import com.miriam.assraf.backend.logic.elementService.EnhancedElementService;
 import com.miriam.assraf.backend.logic.userService.EnhancedUserService;
 import com.miriam.assraf.backend.view.ActionBoundary;
 import com.miriam.assraf.backend.view.ElementBoundary;
+import com.miriam.assraf.backend.view.UserBoundary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
@@ -41,13 +42,8 @@ public class GetAvailableSeatsAction implements ActionInterface {
     @Override
     @Transactional(readOnly = true)
     public Object doAction(ActionBoundary action) {
-        com.miriam.assraf.backend.view.UserBoundary user = userService.login(action.getInvokedBy().getEmail());
-        ElementBoundary element = elementService.getSpecificElement(user.getEmail(),
-                action.getElement().getElementId()); // if user role is PLAYER and element is not active, will
-        List<ElementBoundary> allSeatsInRow = this.elementDao.findAllByParents_elementId_AndActiveIsTrue( // only player
-                                                                                                          // is allowed
-                                                                                                          // to invoke
-                                                                                                          // action
+        ElementBoundary element = elementService.getSpecificElement(action.getElement().getElementId());
+        List<ElementBoundary> allSeatsInRow = this.elementDao.findAllByParents_elementId_AndActiveIsTrue(
                 LongAndStringConverter.convertToLong(element.getElementId()),
                 PageRequest.of(0, maxNumSeats, Direction.ASC, "name", "elementId")).stream()
                 .map(this.entityConverter::convertFromEntity).collect(Collectors.toList());

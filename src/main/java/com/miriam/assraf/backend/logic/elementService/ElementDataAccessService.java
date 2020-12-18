@@ -45,7 +45,7 @@ public class ElementDataAccessService implements EnhancedElementService {
     public ElementBoundary create(String managerEmail, ElementBoundary element) {
         // check user is manager
         UserBoundary user = userService.login(managerEmail); // will throw exception by user service if user doesn't
-                                                             // exist in server
+        // exist in server
         if (user.getRole() == RoleBoundary.MANAGER) {
             // create new tupple in idValue table with non-used id
             // LastIdValue idValue = this.lastValueDao.save(new LastIdValue());
@@ -60,7 +60,7 @@ public class ElementDataAccessService implements EnhancedElementService {
 
             return this.entityConverter.convertFromEntity(elementEntity);
         } else
-            throw new ForbiddenException("Uunothorized to create new element.");
+            throw new ForbiddenException("Unauthorized to create new element.");
     }
 
     @Override
@@ -68,7 +68,7 @@ public class ElementDataAccessService implements EnhancedElementService {
     public ElementBoundary update(String managerEmail, String elementId, ElementBoundary update) {
         // check user is manager
         UserBoundary user = userService.login(managerEmail); // will throw exception by user service if user doesn't
-                                                             // exist in server
+        // exist in server
         if (user.getRole() == RoleBoundary.MANAGER) {
             ElementEntity existingElement = this.elementDao.findById(LongAndStringConverter.convertToLong(elementId))
                     .orElseThrow(() -> new NotFoundException());
@@ -95,34 +95,21 @@ public class ElementDataAccessService implements EnhancedElementService {
                         this.entityConverter.convertAttributesToEntity(update.getElementAttributes()));
             }
 
-            existingElement.getChildren().size();
-            existingElement.getParents().size();
-            // existingElement.getChildren().forEach(c->this.elementDao.save(c));
-            // existingElement.getParents().forEach(p->this.elementDao.save(p));
             this.elementDao.save(existingElement);
 
             return this.entityConverter.convertFromEntity(existingElement);
         } else
-            throw new ForbiddenException("Uunothorized to update element.");
+            throw new ForbiddenException("Unauthorized to update element.");
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ElementBoundary getSpecificElement(String userEmail, String elementId) {
-        UserBoundary user = userService.login(userEmail); // will throw exception by user service if user doesn't
-
+    public ElementBoundary getSpecificElement(String elementId) {
         // SELECT * FROM MESSAGES WHERE ID=?
         Optional<ElementEntity> elementEntity = this.elementDao.findById(Long.parseLong(elementId));
 
         if (elementEntity.isPresent()) {
-            if (user.getRole() == RoleBoundary.PLAYER && !elementEntity.get().getActive()) {
-                throw new NotFoundException("could not find element with id: " + elementId);
-            } else if ((user.getRole() != RoleBoundary.PLAYER && !elementEntity.get().getActive())
-                    || user.getRole() != RoleBoundary.MANAGER) {
-                return this.entityConverter.convertFromEntity(elementEntity.get());
-            } else {
-                throw new ForbiddenException("Unauthorized to retrieve element."); // not player or manager
-            }
+            return this.entityConverter.convertFromEntity(elementEntity.get());
         } else {
             throw new NotFoundException("could not find element with id: " + elementId);
         }
@@ -130,7 +117,7 @@ public class ElementDataAccessService implements EnhancedElementService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ElementBoundary> getAll(String userEmail) {
+    public List<ElementBoundary> getAll() {
         // ON INIT - create new Transaction
         List<ElementBoundary> rv = new ArrayList<>();
 
@@ -147,23 +134,12 @@ public class ElementDataAccessService implements EnhancedElementService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ElementBoundary> getAll(String userEmail, int size, int page) {
-        UserBoundary user = userService.login(userEmail); // will throw exception by user service if user doesn't
-
+    public List<ElementBoundary> getAll(int size, int page) {
         // chose to sort by type and the name, because our elements are cinemas, movies,
-        // theaters
-        if (user.getRole() == RoleBoundary.MANAGER) {
-            return this.elementDao.findAll(PageRequest.of(page, size, Direction.ASC, "type", "elementId")).getContent()
-                    .stream() // Stream<ElementEntity>
-                    .map(this.entityConverter::convertFromEntity) // convert to Stream<ElementBoundary>
-                    .collect(Collectors.toList()); // back to List<ElementBoundary>
-        } else if (user.getRole() == RoleBoundary.PLAYER) { // return only active elements
-            return this.elementDao.findAllByActive(true, PageRequest.of(page, size, Direction.ASC, "type", "elementId")) // Page<ElementEntity>
-                    .stream() // Stream<ElementEntity>
-                    .map(this.entityConverter::convertFromEntity) // convert to Stream<ElementBoundary>
-                    .collect(Collectors.toList()); // back to List<ElementBoundary>
-        } else
-            throw new ForbiddenException("Unauthorized to get all elements."); // not player or manager
+        return this.elementDao.findAllByActive(true, PageRequest.of(page, size, Direction.ASC, "type", "elementId")) // Page<ElementEntity>
+                .stream() // Stream<ElementEntity>
+                .map(this.entityConverter::convertFromEntity) // convert to Stream<ElementBoundary>
+                .collect(Collectors.toList()); // back to List<ElementBoundary>
     }
 
     @Override
@@ -198,88 +174,46 @@ public class ElementDataAccessService implements EnhancedElementService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<ElementBoundary> getChildren(String userEmail, String parentId, int size, int page) {
-        UserBoundary user = userService.login(userEmail); // will throw exception by user service if user doesn't
-
-        if (user.getRole() == RoleBoundary.MANAGER) {
-            return this.elementDao
-                    .findAllByParents_elementId(LongAndStringConverter.convertToLong(parentId),
-                            PageRequest.of(page, size, Direction.ASC, "type", "elementId"))
-                    .stream().map(this.entityConverter::convertFromEntity).collect(Collectors.toList());
-        } else if (user.getRole() == RoleBoundary.PLAYER) {
-            return this.elementDao
-                    .findAllByParents_elementId_AndActiveIsTrue(LongAndStringConverter.convertToLong(parentId),
-                            PageRequest.of(page, size, Direction.ASC, "type", "elementId"))
-                    .stream().map(this.entityConverter::convertFromEntity).collect(Collectors.toList());
-        } else
-            throw new ForbiddenException();
+    public Collection<ElementBoundary> getChildren(String parentId, int size, int page) {
+        return this.elementDao
+                .findAllByParents_elementId_AndActiveIsTrue(LongAndStringConverter.convertToLong(parentId),
+                        PageRequest.of(page, size, Direction.ASC, "type", "elementId"))
+                .stream().map(this.entityConverter::convertFromEntity).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<ElementBoundary> getParents(String userEmail, String childId, int size, int page) {
-        UserBoundary user = userService.login(userEmail); // will throw exception by user service if user doesn't
-
-        if (user.getRole() == RoleBoundary.MANAGER) {
-            return this.elementDao
-                    .findAllByChildren_elementId(LongAndStringConverter.convertToLong(childId),
-                            PageRequest.of(page, size, Direction.ASC, "type", "elementId"))
-                    .stream().map(this.entityConverter::convertFromEntity).collect(Collectors.toList());
-        } else if (user.getRole() == RoleBoundary.PLAYER) {
-            return this.elementDao
-                    .findAllByChildren_elementId_AndActiveIsTrue(LongAndStringConverter.convertToLong(childId),
-                            PageRequest.of(page, size, Direction.ASC, "type", "elementId"))
-                    .stream().map(this.entityConverter::convertFromEntity).collect(Collectors.toList());
-        } else
-            throw new ForbiddenException();
-    }
-
-    /*
-     * @Transactional(readOnly=true) public Set<ElementBoundary> getParents(String
-     * childId) { ElementEntity child =
-     * this.elementDao.findById(LongAndStringConverter.toEntityId(childId)).
-     * orElseThrow(()->new
-     * MessageNotFoundException("could not find element with id: "+childId));
-     * 
-     * return
-     * child.getParents().stream().map(this.entityConverter::convertFromEntity).
-     * collect(Collectors.toSet()); }
-     */
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ElementBoundary> getElementsByName(String userEmail, String elementName, int size, int page) {
-        UserBoundary user = userService.login(userEmail); // will throw exception by user service if user doesn't
-
-        if (user.getRole() == RoleBoundary.MANAGER) {
-            return this.elementDao
-                    .findAllByNameLike(elementName,
-                            PageRequest.of(page, size, Direction.ASC, "type", "name", "elementId"))
-                    .stream().map(this.entityConverter::convertFromEntity).collect(Collectors.toList());
-        } else if (user.getRole() == RoleBoundary.PLAYER) {
-            return this.elementDao
-                    .findAllByNameLikeAndActiveIsTrue(elementName,
-                            PageRequest.of(page, size, Direction.ASC, "type", "name", "elementId"))
-                    .stream().map(this.entityConverter::convertFromEntity).collect(Collectors.toList());
-        } else
-            throw new ForbiddenException();
+    public Collection<ElementBoundary> getParents(String childId, int size, int page) {
+        return this.elementDao
+                .findAllByChildren_elementId_AndActiveIsTrue(LongAndStringConverter.convertToLong(childId),
+                        PageRequest.of(page, size, Direction.ASC, "type", "elementId"))
+                .stream().map(this.entityConverter::convertFromEntity).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ElementBoundary> getElementsByType(String userEmail, String elementType, int size, int page) {
-        UserBoundary user = userService.login(userEmail); // will throw exception by user service if user doesn't
+    public List<ElementBoundary> getElementsByName(String elementName, int size, int page) {
+        return this.elementDao
+                .findAllByNameLikeAndActiveIsTrue(elementName,
+                        PageRequest.of(page, size, Direction.ASC, "type", "name", "elementId"))
+                .stream().map(this.entityConverter::convertFromEntity).collect(Collectors.toList());
+    }
 
-        if (user.getRole() == RoleBoundary.MANAGER) {
-            return this.elementDao
-                    .findAllByTypeLike(elementType, PageRequest.of(page, size, Direction.ASC, "name", "elementId"))
-                    .stream().map(this.entityConverter::convertFromEntity).collect(Collectors.toList());
-        } else if (user.getRole() == RoleBoundary.PLAYER) {
-            return this.elementDao
-                    .findAllByTypeLikeAndActiveIsTrue(elementType,
-                            PageRequest.of(page, size, Direction.ASC, "name", "elementId"))
-                    .stream().map(this.entityConverter::convertFromEntity).collect(Collectors.toList());
-        } else
-            throw new ForbiddenException();
+    @Override
+    @Transactional(readOnly = true)
+    public List<ElementBoundary> getElementsByType(String elementType, int size, int page) {
+        return this.elementDao
+                .findAllByTypeLikeAndActiveIsTrue(elementType,
+                        PageRequest.of(page, size, Direction.ASC, "name", "elementId"))
+                .stream().map(this.entityConverter::convertFromEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ElementBoundary> getElementsByNameAndType(String elementName, String elementType, int size, int page) {
+        return this.elementDao
+                .findAllByNameLikeAndTypeLike(elementName, elementType,
+                        PageRequest.of(page, size, Direction.ASC, "type", "name", "elementId"))
+                .stream().map(this.entityConverter::convertFromEntity).collect(Collectors.toList());
     }
 }

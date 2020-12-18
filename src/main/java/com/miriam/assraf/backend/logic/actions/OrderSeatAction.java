@@ -9,6 +9,7 @@ import com.miriam.assraf.backend.logic.exceptions.NotFoundException;
 import com.miriam.assraf.backend.logic.userService.EnhancedUserService;
 import com.miriam.assraf.backend.view.ActionBoundary;
 import com.miriam.assraf.backend.view.ElementBoundary;
+import com.miriam.assraf.backend.view.UserBoundary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,15 +40,12 @@ public class OrderSeatAction implements ActionInterface {
     @Transactional
     public Object doAction(ActionBoundary action) {
         try {
-            // get specific seat
-            com.miriam.assraf.backend.view.UserBoundary user = userService.login(action.getInvokedBy().getEmail());
-            ElementBoundary element = elementService.getSpecificElement(user.getEmail(),
-                    action.getElement().getElementId());
+            ElementBoundary element = elementService.getSpecificElement(action.getElement().getElementId());
             // update seat status - available = false
             update = element.getElementAttributes();
             update.put("available", false);
             element.setElementAttributes(update); // change available attribute
-            this.elementDao.save(entityConverter.convertToEntity(element));
+            this.elementService.update("manager@demo.com", element.getElementId(), element);
             return element;
 
         } catch (Exception e) {

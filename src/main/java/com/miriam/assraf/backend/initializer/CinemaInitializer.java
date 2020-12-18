@@ -28,6 +28,7 @@ public class CinemaInitializer implements CommandLineRunner {
     private int numTheaters = 5;
     private int numScreeningsPerDay = 3;
     private int numDays = 2;
+    private int numRows = 5;
 
     public CinemaInitializer() {
     }
@@ -55,16 +56,16 @@ public class CinemaInitializer implements CommandLineRunner {
 
         // movies
         List<ElementBoundary> movies = new LinkedList<>();
-        movies.add(createMovie("Tenet", true, "sci-fi/action", "180 minutes", manager.getEmail()));
-        movies.add(createMovie("Wonder Woman 1984", true, "fantasy/action", "120 minutes", manager.getEmail()));
-        movies.add(createMovie("Quiet Place II", true, "horror", "120 minutes", manager.getEmail()));
-        movies.add(createMovie("Black Widow", true, "action", "120 minutes", manager.getEmail()));
-        movies.add(createMovie("Candyman", true, "horror", "120 minutes", manager.getEmail()));
+        movies.add(createMovie("Tenet", "https://images-na.ssl-images-amazon.com/images/I/71Tw-XHzu1L._AC_SL1200_.jpg", true, "sci-fi/action", "180 minutes", manager.getEmail()));
+        movies.add(createMovie("Wonder Woman 1984", "https://upload.wikimedia.org/wikipedia/en/thumb/4/4e/Wonder_Woman_1984.png/220px-Wonder_Woman_1984.png", true, "fantasy/action", "120 minutes", manager.getEmail()));
+        movies.add(createMovie("Quiet Place II", "https://images-na.ssl-images-amazon.com/images/I/71H0Skkm6nL._AC_SL1334_.jpg", true, "horror", "120 minutes", manager.getEmail()));
+        movies.add(createMovie("Black Widow", "https://cdna.artstation.com/p/assets/images/images/023/920/890/large/spider-web-artworks-blackwidow-poster1-2.jpg?1580763862", true, "action", "120 minutes", manager.getEmail()));
+        movies.add(createMovie("Dune", "https://i.pinimg.com/originals/94/a3/74/94a374675226013f6e981cf3c39ab806.png", true, "sci-fi", "120 minutes", manager.getEmail()));
 
         // theaters
         List<ElementBoundary> theaters = new LinkedList<>();
         for (int i = 0; i < numTheaters; i++) {
-            theaters.add(createTheater("theater " + (i + 1), true, manager.getEmail()));
+            theaters.add(createTheater("theater " + (i + 1), numRows,true, manager.getEmail()));
         }
 
         // screenings
@@ -94,7 +95,7 @@ public class CinemaInitializer implements CommandLineRunner {
         }
 
         // rows
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < numRows; i++) {
             ElementBoundary row = createRow("" + (i + 1), -7 + i, 5 + i * 1.5, manager.getEmail()); // distance 1.5m per
                                                                                                     // row
             for (int j = 0; j < numTheaters; j++) {
@@ -119,11 +120,13 @@ public class CinemaInitializer implements CommandLineRunner {
         return this.elementService.create(managerEmail, cinema);
     }
 
-    private ElementBoundary createTheater(String name, boolean active, String managerEmail) {
+    private ElementBoundary createTheater(String name, int numRows, boolean active, String managerEmail) {
         ElementBoundary theater = new ElementBoundary();
         theater.setType("theater");
         theater.setName(name);
         theater.setActive(active);
+        Map<String, Object> moreAttributes = new HashMap<>();
+        moreAttributes.put("num rows", numRows);
         theater.setLocation(new LocationBoundary("0.0", "0.0"));
         return this.elementService.create(managerEmail, theater);
     }
@@ -133,7 +136,7 @@ public class CinemaInitializer implements CommandLineRunner {
         moreAttributes.put("available", true); // initialize all seats available
 
         return IntStream.range(0, numSeats)
-                .mapToObj(i -> new ElementBoundary("seat", "" + (i + 1), true,
+                .mapToObj(i -> new ElementBoundary("seat", "" + (((numRow-1)*numSeats)+(i + 1)), true,
                         new LocationBoundary("0.0", String.valueOf(-numSeats / 2 + i)), moreAttributes)) // lng=x
                                                                                                          // position in
                                                                                                          // row
@@ -162,7 +165,7 @@ public class CinemaInitializer implements CommandLineRunner {
         return this.elementService.create(managerEmail, screening);
     }
 
-    private ElementBoundary createMovie(String name, boolean active, String genre, String runtime,
+    private ElementBoundary createMovie(String name, String poster, boolean active, String genre, String runtime,
             String managerEmail) {
         ElementBoundary movie = new ElementBoundary();
         movie.setType("movie");
@@ -170,6 +173,7 @@ public class CinemaInitializer implements CommandLineRunner {
         movie.setActive(active);
         movie.setLocation(new LocationBoundary("0.0", "0.0")); // y, z
         Map<String, Object> moreAttributes = new HashMap<>();
+        moreAttributes.put("poster", poster);
         moreAttributes.put("genre", genre);
         moreAttributes.put("runtime", runtime);
         movie.setElementAttributes(moreAttributes);

@@ -67,9 +67,6 @@ public class ActionEntity {
         this.createdTimestamp = createdTimestamp;
     }
 
-    @NotNull(message = "must include email of user invoking action")
-    @NotEmpty(message = "must include email of user invoking action")
-    @EmailValidator
     public String getInvokedBy() {
         return invokedBy;
     }

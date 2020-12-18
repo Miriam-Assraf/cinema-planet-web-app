@@ -14,23 +14,13 @@ public interface ElementDao extends PagingAndSortingRepository<ElementEntity, Lo
     public List<ElementEntity> findAllByActive(@Param("active") boolean active, Pageable pageable);
 
     // SELECT * FROM elements WHERE Parents with elementId=?
-    public List<ElementEntity> findAllByParents_elementId(@Param("parentId") Long parentId, Pageable pageable); // list-
-                                                                                                                // we
-                                                                                                                // want
-                                                                                                                // it to
-                                                                                                                // be
-                                                                                                                // ordered
+    public List<ElementEntity> findAllByParents_elementId(@Param("parentId") Long parentId, Pageable pageable);
     // for PLAYER only active elements
 
     public List<ElementEntity> findAllByParents_elementId_AndActiveIsTrue(@Param("parentId") Long parentId,
             Pageable pageable); // list- we want it to be ordered
 
-    public List<ElementEntity> findAllByChildren_elementId(@Param("childId") Long childId, Pageable pageable); // list-
-                                                                                                               // we
-                                                                                                               // want
-                                                                                                               // it to
-                                                                                                               // be
-                                                                                                               // ordered
+    public List<ElementEntity> findAllByChildren_elementId(@Param("childId") Long childId, Pageable pageable);
     // for PLAYER only active elements
 
     public List<ElementEntity> findAllByChildren_elementId_AndActiveIsTrue(@Param("childId") Long childId,
@@ -43,6 +33,8 @@ public interface ElementDao extends PagingAndSortingRepository<ElementEntity, Lo
     public List<ElementEntity> findAllByNameLikeAndActiveIsTrue(@Param("name") String name, Pageable pageable);
 
     public List<ElementEntity> findAllByTypeLike(@Param("type") String type, Pageable pageable);
+
+    public List<ElementEntity> findAllByNameLikeAndTypeLike(@Param("name") String name, @Param("type") String type, Pageable pageable);
 
     // for PLAYER only active elements
     public List<ElementEntity> findAllByTypeLikeAndActiveIsTrue(@Param("type") String type, Pageable pageable);

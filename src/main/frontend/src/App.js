@@ -13,6 +13,7 @@ import MovieProvider from "./components/context/MovieContext";
 import TheaterProvider from "./components/context/TheaterContext";
 import RowProvider from "./components/context/RowContext";
 import Theater from "./components/theater/Theater";
+import CinemaProvider from "./components/context/CinemaContext";
 
 function App() {
   const marginTop = {
@@ -21,6 +22,7 @@ function App() {
 
   return (
     <Router>
+      <CinemaProvider>
       <UserProvider>
         <MovieProvider>
           <TheaterProvider>
@@ -48,6 +50,7 @@ function App() {
           </TheaterProvider>
         </MovieProvider>
       </UserProvider>
+      </CinemaProvider>
     </Router>
   );
 }

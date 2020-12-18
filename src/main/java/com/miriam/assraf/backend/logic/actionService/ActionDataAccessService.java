@@ -73,12 +73,12 @@ public class ActionDataAccessService implements EnhancedActionService {
     @Override
     @Transactional
     public Object invokeAction(ActionBoundary actionBoundary) {
-        UserBoundary user = userService.login(actionBoundary.getInvokedBy().getEmail());
+        //UserBoundary user = userService.login(actionBoundary.getInvokedBy().getEmail());
         Object res = null;
 
-        if (user.getRole() == RoleBoundary.MANAGER || user.getRole() == RoleBoundary.ADMIN) { // actions for players only
-            throw new ForbiddenException("Unauthorized to invoke new action.");
-        }
+        //if (user.getRole() == RoleBoundary.MANAGER || user.getRole() == RoleBoundary.ADMIN) { // actions for players only
+            //throw new ForbiddenException("Unauthorized to invoke new action.");
+        //}
             // create new tuple in idValue table with non-used id
             ActionEntity actionEntity = this.entityConverter.convertToEntity(actionBoundary);
             // LastIdValue idValue = this.lastValueDao.save(new LastIdValue());

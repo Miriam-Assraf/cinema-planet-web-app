@@ -1,4 +1,4 @@
-package com.miriam.assraf.backend.controller;
+package com.miriam.assraf.backend.rest;
 
 import com.miriam.assraf.backend.logic.actionService.EnhancedActionService;
 import com.miriam.assraf.backend.logic.elementService.EnhancedElementService;

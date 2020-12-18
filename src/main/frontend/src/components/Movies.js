@@ -4,9 +4,10 @@ import axios from "axios";
 import { MovieContext } from "./context/MovieContext";
 import { UserContext } from "./context/UserContext";
 import { Link } from "react-router-dom";
+import {CinemaContext} from "./context/CinemaContext";
 
 export default class Movies extends React.Component {
-  elementUrl = "http://cinemaplanet-env-2.eba-vd7pk3vm.eu-central-1.elasticbeanstalk.com/acs/elements";
+  elementUrl = "http://cinemaplanet-env.eba-zpzpkar4.eu-central-1.elasticbeanstalk.com/acs/elements";
 
   constructor() {
     super();
@@ -17,7 +18,7 @@ export default class Movies extends React.Component {
 
   componentDidMount() {
     axios
-      .get(this.elementUrl + "/manager@demo.com/search/byType/movie")
+      .get(this.elementUrl + "/search/byType/movie")
       .then((response) => response.data)
       .then((data) => {
         this.setState({ movies: data });
@@ -59,7 +60,9 @@ export default class Movies extends React.Component {
                             style={{ textDecoration: "none" }}
                           >
                             <img
-                              src={require(`../images/movies/${movie.name}.jpg`)}
+                              src={movie.elementAttributes.poster}
+                              height="300"
+                              width="200"
                               alt="movie-poster"
                               onClick={async (event) => {
                                 event.preventDefault();

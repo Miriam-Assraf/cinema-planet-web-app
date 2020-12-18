@@ -66,21 +66,26 @@ export default class Screenings extends React.Component {
                           variant="light"
                           onClick={async (event) => {
                             event.preventDefault();
+                            theaterContext.resetState();
                             const restheater = await theaterContext.getTheater(
                               screening.elementId
                             );
                             if (restheater) {
+                              console.log("theater : " + restheater.data[0].elementId);
                               const resrows = await theaterContext.getRows(
                                 restheater.data[0].elementId
                               );
                               if (resrows) {
                                 theaterContext.setRows(resrows.data);
+                                console.log(theaterContext.state.rows);
+                                theaterContext.state.numRows=theaterContext.state.rows.length;
                                 resrows.data.map(async (row) => {
+
                                   const resseats = await rowContext.getSeats(
                                     row.elementId
                                   );
                                   if (resseats) {
-                                    rowContext.setSeats(resseats.data);
+                                    await theaterContext.setSeats(resseats.data, row.name);
                                   }
                                 });
                                 this.props.history.push("/movie/theater");

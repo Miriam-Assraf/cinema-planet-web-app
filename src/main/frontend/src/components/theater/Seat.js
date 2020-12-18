@@ -11,7 +11,7 @@ export default class Seat extends Component {
   setSeatColor = (isSelected, isAvailable, isMiddle) => {
     let color;
     if (isMiddle) {
-      color = "#941dd3";
+      color = "#fff27e";
     } else {
       color = "#17d4ff";
     }
@@ -19,13 +19,13 @@ export default class Seat extends Component {
       color = "#ff7e00";
     }
     if (!isAvailable) {
-      color = "#79a2ab";
+      color = "#191f2f";
     }
     return color;
   };
 
   render() {
-    const { seatNumber, rowId, onSeatClick, isSelected } = this.props;
+    const { seat, rowId, onSeatClick, isSelected } = this.props;
     const seatSize = "35";
     let isMiddle;
     let isAvailable = true;
@@ -34,17 +34,15 @@ export default class Seat extends Component {
       <RowContext.Consumer>
         {(context) => (
           <div
-            onClick={() =>
-              onSeatClick({ rowId: rowId, seatNumber, isAvailable })
-            }
+              onClick={async () => {
+              onSeatClick(rowId, seat.name, isAvailable, seat)
+            }}
             className={"seat-item"}
           >
-            {(isMiddle = context.isMiddleSeat(seatNumber))}
-
-            {(isAvailable = context.isSeatAvailable(seatNumber))}
-
+            {(isMiddle = context.isMiddleSeat(seat))}
+            {(isAvailable = context.isSeatAvailable(seat))}
             <svg
-              id={`${rowId}${seatNumber}`}
+              id={`${seat.name}`}
               data-name="Layer 1"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 577.53 532.66"
